@@ -1,5 +1,6 @@
 import socket
 import timing
+import os
 from threading import Thread
 import requests
 
@@ -8,7 +9,7 @@ resolved = {}
 
 class ThreadWithReturnValue(Thread):
     def __init__(self, group=None, target=None, name=None,
-                 args=(), kwargs={}, verbose=None):
+                 args=(), kwargs={}, Verbose=None):
         Thread.__init__(self, group, target, name, args, kwargs)
         self._return = None
 
@@ -21,29 +22,20 @@ class ThreadWithReturnValue(Thread):
         return self._return
 
 
-def url_dup_re():
-    host = [d.rstrip('/') for d in open('url_input.txt', 'r', encoding='utf8').readlines()]
-    with open('url_output.txt', 'a') as r:
-        r.writelines(set(repr.join(i) for i in host))
-
-
 def sticky_port():
     ctep = input('Please type in the country name or the country code' + '\n')
-    with open('./Sticky_port.txt', 'r') as s:
+    with open('Sticky_port.txt', 'r') as s:
         with open('sticky.txt', 'a') as o:
-            data = [i for i in s.readlines()]
-            ctep_exist = [x for x in data if ctep in x]
-            o.writelines(x for x in ctep_exist)
+            o.writelines(x for x in s.readlines() if ctep in x)
     print('Saved the ports you want.')
+    exit()
 
 
 def per_request_port():
     ctep = input('Please type in the country name or the country code' + '\n')
-    with open('./PerRequest_port.txt', 'r') as s:
+    with open('PerRequest_port.txt', 'r') as s:
         with open('per_request.txt', 'a') as o:
-            data = [i for i in s.readlines()]
-            ctep_exist = [x for x in data if ctep in x]
-            o.writelines(x for x in ctep_exist)
+            o.writelines(x for x in s.readlines() if ctep in x)
     print('Saved the ports you want.')
 
 
@@ -71,7 +63,7 @@ def get_ip(host):
 def domain_ip_bulk():
     ctep = input('Do you want to convert Sticky ports or Per Request ports? stick/per' + '\n')
     if ctep == 'stick':
-        with open('./sticky_port.txt', 'r') as s:
+        with open('sticky_port.txt', 'r') as s:
             with open('stick_ip_address.txt', 'a') as ri:
                 data = [i for i in s.readlines()]
                 threads = [ThreadWithReturnValue(target=get_ip, args=(x,)) for x in data]
@@ -80,7 +72,7 @@ def domain_ip_bulk():
                 ri.writelines(x.join() for x in threads)
 
     if ctep == 'per':
-        with open('./PerRequest_port.txt', 'r') as s:
+        with open('PerRequest_port.txt', 'r') as s:
             with open('per_req_ip_address.txt', 'a') as ri:
                 data = [i for i in s.readlines()]
                 threads = [ThreadWithReturnValue(target=get_ip, args=(x,)) for x in data]
@@ -88,29 +80,22 @@ def domain_ip_bulk():
                 start = [x.start() for x in threads]
                 ri.writelines(x.join() for x in threads)
 
-
 while True:
-    print('You are using The Revolution Utilities by JM Revolution')
-    print('Please choose one of the following options by entering the option number:')
-    print('Which ')
-    print('1 - Duplicated Url Remover')
-    print('2 - Convert Domain DNS to IP Address')
-    print('2 - Convert a list of Domain DNS to IP Address')
-    ur = input()
-    if ur == 'jmr':
-        mk = input('Enter the Admin password to unlock full features')
-        if mk == 'Alibaba.1408':
-            print('SlChoose one of the following options:')
-            print('1 - Get Smartproxy Sticky proxy')
-            print('2 - Get Smartproxy Per Request proxy')
-            cc = input()
-            if cc == '1':
-                sticky_port()
-            if cc == '2':
-                per_request_port()
-    if ur == '1':
-        url_dup_re()
-    if ur == '2':
+    print('SmartProxy Endpoint Generator v1.0')
+    print('Coded by JBusiness')
+    print('Enter V to view country codes')
+    print('Enter 1 to generate Sticky Ports')
+    print('Enter 2 to generate Per Request Ports')
+    print('Enter 3 to convert domain proxy to IP proxy')
+    print('Enter 4 to convert domain proxy to IP proxy in Bulk')
+    picky = input('Which option you want to choose?' + '\n')
+    if picky == 'v':
+        os.system('notepad.exe country_code.txt')
+    if picky == '1':
+        sticky_port()
+    if picky == '2':
+        per_request_port()
+    if picky == '3':
         domain_ip()
-    if ur == '3':
+    if picky == '4':
         domain_ip_bulk()
